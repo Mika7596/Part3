@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 
-app.use(morgan("tiny"));
 
 let persons = [
     { 
@@ -54,14 +53,20 @@ app.delete("/api/persons/:id", (request, response) => {
   const personToDelete = persons.find(p => p.id == id);
   if (personToDelete){
     persons = persons.filter(p => p.id != id);
-    response.send("Entry deleted");
-    response.status(204).end();
+    response.status(204).end("Entry deleted");
   } else {
     response.status(404).end("Entry not found")
   }
 })
 
 app.use(express.json());
+app.use(morgan("tiny"));
+morgan.token('body', (req) => {
+  return JSON.stringify(req.body)
+})
+app.use(
+  morgan(':method :url :status :res[content-length] - :response-time ms :body')
+)
 function generateNewId () {
   const newId = Math.floor(Math.random() * 200);
   return newId;
