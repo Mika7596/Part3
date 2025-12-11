@@ -65,6 +65,12 @@ function generateNewId () {
 }
 app.post("/api/persons", (request, response) => {
   const newEntry = request.body;
+  if (!newEntry.name.trim() || !newEntry.number.trim()) {
+    return response.status(404).end("Please fill out both name and number inputs.")
+  }
+  if (persons.find(p => p.name == newEntry.name)){
+    return response.status(404).end("Entry with this name already exists in phonebook.")
+  }
   let id = 1;
   do {
     id = generateNewId()
