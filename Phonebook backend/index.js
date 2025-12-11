@@ -58,6 +58,23 @@ app.delete("/api/persons/:id", (request, response) => {
   }
 })
 
+app.use(express.json());
+function generateNewId () {
+  const newId = Math.floor(Math.random() * 200);
+  return newId;
+}
+app.post("/api/persons", (request, response) => {
+  const newEntry = request.body;
+  let id = 1;
+  do {
+    id = generateNewId()
+  } while (persons.find(p => p.id == id))
+  newEntry.id = id;
+  persons = persons.concat(newEntry);
+  response.json(newEntry);
+  response.send(`${newEntry} added to phonebook successfully!`)
+})
+
 const PORT = 3001;
 app.listen(PORT);
 console.log(`Server running on port ${PORT}`);
