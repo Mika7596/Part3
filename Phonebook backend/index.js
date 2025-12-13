@@ -119,6 +119,28 @@ app.post("/api/persons", (request, response, next) => {
     .catch(error => next(error));
 });
 
+app.put("/api/persons/:id", (request, response, next) => {
+    const id = request.params.id;
+    const { name, number } = request.body;
+
+    if (!name || !number) {
+        return response.status(400).json({ error: 'Name and number are required' });
+    }
+
+    Entry.findByIdAndUpdate(id, { number }, { new: true })
+        .then(updatedPerson => {
+            if (updatedPerson) {
+                console.log(`Person with id ${id} updated`);
+                response.json(updatedPerson);
+            } else {
+                const error = new Error("Entry not found");
+                error.name = "NotFoundError";
+                next(error);
+            }
+        })
+        .catch(error => next(error));
+});
+
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: "unknown endpoint" });
 };
