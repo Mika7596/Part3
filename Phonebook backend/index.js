@@ -99,11 +99,11 @@ app.post("/api/persons", (request, response, next) => {
 
   if (!newEntry.name.trim() || !newEntry.number.trim()) {
     return response
-      .status(404)
+      .status(400)
       .end("Please fill out both name and number inputs.");
   }
 
-  Entry.findOne({ name: newEntry.name })
+  Entry.findOne({ name: newEntry.name.toLowerCase() })
     .then((existingPerson) => {
       if (existingPerson) {
         return response
