@@ -127,7 +127,7 @@ app.put("/api/persons/:id", (request, response, next) => {
         return response.status(400).json({ error: 'Name and number are required' });
     }
 
-    Entry.findByIdAndUpdate(id, { number }, { new: true })
+    Entry.findByIdAndUpdate(id, { number }, { new: true, runValidators: true })
         .then(updatedPerson => {
             if (updatedPerson) {
                 console.log(`Person with id ${id} updated`);
